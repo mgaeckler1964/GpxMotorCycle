@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GpxMotorCycle</string>
+    <string name="app_version">0.7.15</string>
+    
+    <string name="savePos">Standort speichern</string>
+    <string name="savePosAs">Standort mit Namen speichern &#8230;</string>
+    <string name="loadPos">Standort laden &#8230;</string>
+    <string name="deletePos">Standort löschen &#8230;</string>
+    <string name="gpsSpeed">GPS Intervall</string>
+    <string name="gpsSpeedAuto">Automatik</string>
+    <string name="saveGpx">GPX speichern</string>
+    <string name="loadGpx">GPX laden</string>
+    
+    <string name="calibration">Kalibrierung</string>
+
+    <string name="about">Info</string>
+    <string name="exit">Beenden</string>
+    
+    <string name="statusLabel">Status</string>
+    <string name="speedLabel">Geschwindigkeit</string>
+    <string name="maxSpeedLabel">Max. Geschwindigkeit</string>
+    <string name="minAccelLabel">Min. Beschleunigung</string>
+    <string name="curAccelLabel">Beschleunigung</string>
+    <string name="maxAccelLabel">Max. Beschleunigung</string>
+    
+    <string name="distanceLabel">Strecke</string>
+    <string name="timeLabel">Zeit</string>
+    <string name="breakLabel">Pause</string>
+    <string name="altitudeLabel">Höhe</string>
+    <string name="upLabel">Aufstieg</string>
+    <string name="downLabel">Abstieg</string>
+    <string name="positionLongitude">Längengrad</string>
+    <string name="positionLatitude">Breitengrad</string>
+    <string name="orientStatus">Neigung</string>
+    
+</resources>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:keepScreenOn="true"
+    >
+
+	<TextView
+	    android:id="@+id/statusView"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:textSize="20sp"
+	    android:text="@string/statusLabel" />
+	
+	<TextView  
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content"
+	    android:id="@+id/speedView"
+	    android:textSize="20sp"
+	    android:text="@string/speedLabel"/>
+
+	<TextView  
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content"
+	    android:id="@+id/maxDpeedView"
+	    android:textSize="20sp"
+	    android:text="@string/maxSpeedLabel"/>
+
+	<TextView  
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content"
+	    android:id="@+id/minAccelView"
+	    android:textSize="20sp"
+	    android:text="@string/minAccelLabel"/>
+
+	<TextView  
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content"
+	    android:id="@+id/curAccelView"
+	    android:textSize="20sp"
+	    android:text="@string/curAccelLabel"/>
+	
+	<TextView  
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content"
+	    android:id="@+id/maxAccelView"
+	    android:textSize="20sp"
+	    android:text="@string/maxAccelLabel"/>
+	
+	<TextView  
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content"
+	    android:id="@+id/distanceView"
+	    android:textSize="20sp"
+	    android:text="@string/distanceLabel"/>
+
+	<TextView  
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content"
+	    android:id="@+id/timeView"
+	    android:textSize="20sp"
+	    android:text="@string/timeLabel"/>
+
+	<TextView  
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content"
+	    android:id="@+id/breakView"
+	    android:textSize="20sp"
+	    android:text="@string/breakLabel"/>
+
+	<TextView  
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content"
+	    android:id="@+id/lonView"
+	    android:textSize="20sp"
+	    android:text="@string/positionLongitude"/>
+
+	<TextView  
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content"
+	    android:id="@+id/latView"
+	    android:textSize="20sp"
+	    android:text="@string/positionLatitude"/>
+
+	<TextView  
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content"
+	    android:id="@+id/altitudeView"
+	    android:textSize="20sp"
+	    android:text="@string/altitudeLabel"/>
+	
+	<TextView  
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content"
+	    android:id="@+id/upView"
+	    android:textSize="20sp"
+	    android:text="@string/upLabel"/>
+	
+	<TextView  
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content"
+	    android:id="@+id/downView"
+	    android:textSize="20sp"
+	    android:text="@string/downLabel"/>
+	
+	<TextView  
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content"
+	    android:id="@+id/rotationStatus"
+	    android:textSize="20sp"
+	    android:text="@string/orientStatus"/>
+	
+	<TextView  
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content"
+	    android:id="@+id/gameStatus"
+	    android:textSize="20sp"
+	    android:text="@string/orientStatus"/>
+	
+	<TextView  
+	    android:layout_width="fill_parent" 
+	    android:layout_height="wrap_content"
+	    android:id="@+id/combinedStatus"
+	    android:textSize="20sp"
+	    android:text="@string/orientStatus"/>
+	
+</LinearLayout>
