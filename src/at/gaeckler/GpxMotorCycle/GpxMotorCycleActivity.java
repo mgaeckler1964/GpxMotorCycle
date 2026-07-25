@@ -157,7 +157,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 	{
 		if( m_sdfIso == null )
 		{
-			m_sdfIso = new SimpleDateFormat("yyyy-MM-dd'T'HH:MM:SS'Z'");
+			m_sdfIso = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 			m_sdfIso.setTimeZone(TimeZone.getTimeZone("UTC"));
 		}
 		return m_sdfIso;
@@ -186,7 +186,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 	{
 		return getDateLong(loc.getTime(), useIso);
 	}
-	private void openXML() throws IOException
+	private void openXMLos() throws IOException
 	{
 		m_file = getExternalFileName(TRACK_FILE);
 		m_file.createNewFile();
@@ -194,7 +194,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 		m_fileos = new FileOutputStream(m_file, true);
 		m_pos = new PrintWriter(m_fileos); 
 	}
-	private void closeXML() throws IOException
+	private void closeXMLos() throws IOException
 	{
 		if( m_pos != null )
 		{
@@ -208,13 +208,17 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 		}
 		
 	}
-	private void generateTrackPoint(Location loc)
+	
+	Location lastTrackPoint = null;
+	float lastBearing=0;
+	
+	private void appendTrackPoint(Location loc)
 	{
         try
 		{
         	if( m_pos == null )
         	{
-        		openXML();
+        		openXMLos();
         	}
 			m_pos.write("<trkpt lon=\"");
 			m_pos.print(loc.getLongitude());
@@ -230,6 +234,50 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 			m_pos.write("<time>");
 			m_pos.print(getDateLoc(loc, true));
 			m_pos.write("</time>\n");
+			m_pos.write("<utcStamp>");
+			m_pos.print(loc.getTime());
+			m_pos.write("</utcStamp>\n");
+			m_pos.write("<speed>");
+			m_pos.print(loc.getSpeed());
+			m_pos.write("</speed>\n");
+			if( lastTrackPoint == null )
+			{
+				lastTrackPoint = loc;
+			}
+			else
+			{
+				m_pos.write("<calculated>\n");
+
+				float bearing = lastTrackPoint.bearingTo(loc);
+				m_pos.write("<bearing>");
+				m_pos.print(bearing);
+				m_pos.write("</bearing>\n");
+
+				m_pos.write("<turn>");
+				m_pos.print(bearing-lastBearing);
+				m_pos.write("</turn>\n");
+
+				float distance =lastTrackPoint.distanceTo(loc); 
+				m_pos.write("<distance>");
+				m_pos.print(distance);
+				m_pos.write("</distance>\n");
+
+				long ellapsedTime = loc.getTime()-lastTrackPoint.getTime();
+				m_pos.write("<ellapsedTime>");
+				m_pos.print(ellapsedTime);
+				m_pos.write("</ellapsedTime>\n");
+
+				if(ellapsedTime>0)
+				{
+					m_pos.write("<speed>");
+					m_pos.print(distance/(ellapsedTime/1000));
+					m_pos.write("</speed>\n");
+				}
+				m_pos.write("</calculated>\n");
+
+				lastBearing = bearing; 
+				lastTrackPoint = loc;
+			}
 			m_pos.write("</trkpt>\n");
 			m_pos.flush();
 			m_fileos.flush();
@@ -243,7 +291,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 	{
 		try
 		{
-			closeXML();
+			closeXMLos();
 		}
 		catch( Exception e )
 		{
@@ -258,7 +306,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 			String fnName = getDateLong(m_startTime, false);
 			BufferedReader  reader = new BufferedReader(new FileReader(m_file)); 
 			File gpxFile = getExternalFileName( fnName + ".gpx" );
-			FileOutputStream fileos = new FileOutputStream(gpxFile, true);
+			FileOutputStream fileos = new FileOutputStream(gpxFile, false);
 			PrintWriter writer = new PrintWriter(fileos);
 			
 			writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>\n" );
@@ -488,6 +536,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 
         setIgnoreAccuracy(true);
         //simulateLocationFix(m_home);
+        readTrackPoints();
 	}
 
 	@Override
@@ -598,7 +647,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
     public void onPause()
     {
     	try {
-			closeXML();
+			closeXMLos();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -825,7 +874,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
     	setStatus( m_myStatus );
   	
     	updateDisplay(newLocation);
-    	generateTrackPoint(newLocation);
+    	appendTrackPoint(newLocation);
     }
 
 	@Override
