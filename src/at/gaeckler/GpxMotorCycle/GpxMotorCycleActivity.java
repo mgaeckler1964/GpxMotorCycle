@@ -581,65 +581,82 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 		return super.onPrepareOptionsMenu(menu);
 	}
 
+	private void showAbout()
+	{
+		String name = getString(R.string.app_name);
+		String version = getString(R.string.app_version);
+		String copyright = getString(R.string.app_copyright);
+		String url = getString(R.string.app_url);
+		showMessage(
+				name,
+				name + " "+version+"\n"+copyright+"\n"+url,
+				false
+		);
+	}
 	@Override
     public boolean onOptionsItemSelected( MenuItem item )
     {
     	int	itemID = item.getItemId();
     	System.out.println( itemID );
-    	if( itemID == R.id.calibration ) {
-            if (!m_calibration) {
+    	if( itemID == R.id.calibration )
+		{
+            if (!m_calibration)
+			{
                 m_calibration = true;
                 m_sumLongitude = 0;
                 m_sumLatitude = 0;
                 m_sumAltitude = 0;
                 m_locationFixCount = 0;
-            } else {
+            }
+			else
+			{
                 m_calibration = false;
             }
         }
-        else if( itemID ==  R.id.autoGps ) {
+        else if( itemID ==  R.id.autoGps )
+		{
             removeGpsTimer();
         }
-        else if( itemID ==  R.id.fastGps ) {
+        else if( itemID ==  R.id.fastGps )
+		{
             createGpsTimer(FAST_GPS);
         }
-        else if( itemID ==  R.id.normalGps ) {
+        else if( itemID ==  R.id.normalGps )
+		{
             createGpsTimer(NORMAL_GPS);
         }
-        else if( itemID ==  R.id.slowGps ) {
+        else if( itemID ==  R.id.slowGps )
+		{
             createGpsTimer(SLOW_GPS);
         }
-        else if( itemID ==  R.id.exit ) {
+        else if( itemID ==  R.id.exit )
+		{
             stopListening();
             try {
                 createGpxFile();
-            } catch (IOException e) {
+            }
+			catch (IOException e)
+			{
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             finish();
         }
-        else if( itemID ==  R.id.about ) {
-    		String name = getString(R.string.app_name);
-    		String version = getString(R.string.app_version);
-    		showMessage(
-    			name, 
-    			name + " "+version+"\n(c) 2025-2026 by Martin Gäckler\nhttps://www.gaeckler.at/",
-    			false
-    		);
+        else if( itemID ==  R.id.about )
+		{
+			showAbout();
     	}
 
     	return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void onOptionsMenuClosed(Menu menu) {
-        super.onOptionsMenuClosed(menu);
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.CUR_DEVELOPMENT) {
-            // Workaround for https://issuetracker.google.com/issues/315761686
-            invalidateOptionsMenu();
-        }
-    }
+	public void onOptionsMenuClosed(Menu menu)
+	{
+		super.onOptionsMenuClosed(menu);
+		// Workaround for https://issuetracker.google.com/issues/315761686
+		invalidateOptionsMenu();
+	}
 
     private void saveSharedPreferences()
     {
