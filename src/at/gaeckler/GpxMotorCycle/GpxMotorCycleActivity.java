@@ -7,6 +7,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
+
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -20,10 +22,12 @@ import android.content.pm.PackageManager;
 import android.location.GpsSatellite;
 import android.location.GpsStatus;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.PowerManager;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -463,6 +467,21 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
         {
         	return;
         }
+		// Prüfen, ob "Zugriff auf alle Dateien" bereits gewährt wurde:
+        System.out.println("check perm");
+		if (!Environment.isExternalStorageManager()) {
+			try {
+
+				Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+				intent.addCategory("android.intent.category.DEFAULT");
+				intent.setData(Uri.parse(String.format("package:%s", getPackageName())));
+				startActivity(intent);
+			} catch (Exception e) {
+				Intent intent = new Intent();
+				intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+				startActivity(intent);
+			}
+		}
 
     	int gpsInterval;
     	if( savedInstanceState != null )
@@ -562,75 +581,82 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 		return super.onPrepareOptionsMenu(menu);
 	}
 
+	private void showAbout()
+	{
+		String name = getString(R.string.app_name);
+		String version = getString(R.string.app_version);
+		String copyright = getString(R.string.app_copyright);
+		String url = getString(R.string.app_url);
+		showMessage(
+				name,
+				name + " "+version+"\n"+copyright+"\n"+url,
+				false
+		);
+	}
 	@Override
     public boolean onOptionsItemSelected( MenuItem item )
     {
-    	int	itemId = item.getItemId();
-    	System.out.println( itemId );
-    	switch( itemId )
-    	{
-    	case R.id.calibration:
-    		if( !m_calibration )
-    		{
-    	    	m_calibration = true;
-    	    	m_sumLongitude = 0;
-    	    	m_sumLatitude = 0;
-    	    	m_sumAltitude = 0;
-    	    	m_locationFixCount = 0;    		}
-    		else
-    		{
-    	    	m_calibration = false;
-    		}
-    		break;
-
-    	case R.id.autoGps:
-    		removeGpsTimer();
-    		break;
-    	case R.id.fastGps:
-    		createGpsTimer(FAST_GPS);
-    		break;
-    	case R.id.normalGps:
-    		createGpsTimer(NORMAL_GPS);
-    		break;
-    	case R.id.slowGps:
-    		createGpsTimer(SLOW_GPS);
-    		break;
-    	case R.id.exit:
-    		stopListening();
-    		try {
-				createGpxFile();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-    		finish();
-            break;
-    	case R.id.about:
-    	{
-    		String name = getString(R.string.app_name);
-    		String version = getString(R.string.app_version);
-    		showMessage(
-    			name, 
-    			name + " "+version+"\n(c) 2025 by Martin Gäckler\nhttps://www.gaeckler.at/",
-    			false
-    		);
-    		break;
-    	}
-    	default:
-    		break;
+    	int	itemID = item.getItemId();
+    	System.out.println( itemID );
+    	if( itemID == R.id.calibration )
+		{
+            if (!m_calibration)
+			{
+                m_calibration = true;
+                m_sumLongitude = 0;
+                m_sumLatitude = 0;
+                m_sumAltitude = 0;
+                m_locationFixCount = 0;
+            }
+			else
+			{
+                m_calibration = false;
+            }
+        }
+        else if( itemID ==  R.id.autoGps )
+		{
+            removeGpsTimer();
+        }
+        else if( itemID ==  R.id.fastGps )
+		{
+            createGpsTimer(FAST_GPS);
+        }
+        else if( itemID ==  R.id.normalGps )
+		{
+            createGpsTimer(NORMAL_GPS);
+        }
+        else if( itemID ==  R.id.slowGps )
+		{
+            createGpsTimer(SLOW_GPS);
+        }
+        else if( itemID ==  R.id.exit )
+		{
+            stopListening();
+            try {
+                createGpxFile();
+            }
+			catch (IOException e)
+			{
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            finish();
+        }
+        else if( itemID ==  R.id.about )
+		{
+			showAbout();
     	}
 
     	return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void onOptionsMenuClosed(Menu menu) {
-        super.onOptionsMenuClosed(menu);
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.CUR_DEVELOPMENT) {
-            // Workaround for https://issuetracker.google.com/issues/315761686
-            invalidateOptionsMenu();
-        }
-    }
+	public void onOptionsMenuClosed(Menu menu)
+	{
+		super.onOptionsMenuClosed(menu);
+		// Workaround for https://issuetracker.google.com/issues/315761686
+		invalidateOptionsMenu();
+	}
 
     private void saveSharedPreferences()
     {
