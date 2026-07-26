@@ -468,7 +468,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
         	return;
         }
 		// Prüfen, ob "Zugriff auf alle Dateien" bereits gewährt wurde:
-System.out.println("check perm");
+        System.out.println("check perm");
 		if (!Environment.isExternalStorageManager()) {
 			try {
 
@@ -624,7 +624,7 @@ System.out.println("check perm");
     		String version = getString(R.string.app_version);
     		showMessage(
     			name, 
-    			name + " "+version+"\n(c) 2025 by Martin Gäckler\nhttps://www.gaeckler.at/",
+    			name + " "+version+"\n(c) 2025-2026 by Martin Gäckler\nhttps://www.gaeckler.at/",
     			false
     		);
     	}

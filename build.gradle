@@ -21,8 +21,9 @@ android {
         applicationId "at.gaeckler.GpxMotorCycle"
         minSdk 30
         targetSdk 36
-        versionCode 6
-        versionName "07.28"
+        versionCode 7
+        versionName "1.7.26"
+        resValue "string", "app_version", versionName
     }
 
     sourceSets {
