@@ -827,20 +827,6 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 			getNumLocations()
     	);
     }
-	@Override
-	public void onLocationServiceOff() {
-		setStatus( "Kein GPS Empfang" );
-	}
-
-	@Override
-	public void onLocationTempOff() {
-		setStatus( "Kurzfristig kein GPS Empfang" );
-	}
-
-	@Override
-	public void onLocationServiceOn() {
-		setStatus( "GPS Empfang" );
-	}
 
 	@Override
 	public void onLocationEnabled()
