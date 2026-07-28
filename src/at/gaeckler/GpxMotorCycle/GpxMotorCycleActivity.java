@@ -49,8 +49,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.GpsSatellite;
-import android.location.GpsStatus;
+import android.location.GnssStatus;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -134,8 +133,6 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 	private double		m_sumAltitude = 0;
 	private long		m_locationFixCount = 0;
 
-	private PowerManager.WakeLock	m_wakeLock;
-	
 	private SensorManager	m_sensorManager;
 	private Sensor			m_gameRotationMeter;
 	private Sensor			m_rotationVector;
@@ -539,14 +536,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
         }
     	createGpsTimer(gpsInterval);
 
-        PowerManager	pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        m_wakeLock = pm.newWakeLock( PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, "GpxMotorCycle" );
-        m_wakeLock.acquire();
-        getWindow().addFlags(
-        	WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED|
-        	WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON|
-        	WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-        );
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         
 		System.out.println("setContentView");
         setContentView(R.layout.main);
@@ -706,7 +696,6 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        m_wakeLock.release();
     	saveSharedPreferences();
         super.onPause();
     }
@@ -866,30 +855,28 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 	}
 	
 	@Override
-	public void onGpsStatusChanged2(int event)
+	public void onGnssStatusChanged2(int event, GnssStatus status)
 	{
-		if( event == GpsStatus.GPS_EVENT_STARTED )
-        	setStatus( "GPS gestartet");
-		else if( event == GpsStatus.GPS_EVENT_STOPPED )
-        	setStatus( "GPS gestoppt");
-		else if( event == GpsStatus.GPS_EVENT_FIRST_FIX )
-        	setStatus( "GPS erster Fix");
-		else if( event == GpsStatus.GPS_EVENT_SATELLITE_STATUS  )
+		if( event == GPS_EVENT_STARTED )
+			setStatus( "GPS gestartet");
+		else if( event == GPS_EVENT_STOPPED )
+			setStatus( "GPS gestoppt");
+		else if( event == GPS_EVENT_FIRST_FIX )
+			setStatus( "GPS erster Fix");
+		else if( event == GPS_EVENT_SATELLITE_STATUS  )
 		{
-			int Satellites = 0;
+			int Satellites = status.getSatelliteCount();
 			int SatellitesInFix = 0;
-			for (GpsSatellite sat : getSatellites())
-			{
-				if(sat.usedInFix())
-					SatellitesInFix++;              
 
-				Satellites++;
+			for (int i = 0; i < Satellites; i++)
+			{
+				if(status.usedInFix(i))
+				{
+					SatellitesInFix++;
+				}
 			}
-			setStatus( 
-				"GPS Satelliten: " + 
-				SatellitesInFix + "/" +
-				Satellites
-			);
+
+			setStatus( "GPS Satelliten: " + SatellitesInFix + "/" + Satellites );
 		}
 	}
 
