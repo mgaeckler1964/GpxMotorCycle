@@ -1,3 +1,33 @@
+/*
+		Project:		GpsMotorCycle
+		Module:			GpsMotorCycle.java
+		Description:	The android activity base for GpsMotorCycle app
+		Author:			Martin Gäckler
+		Address:		Hofmannsthalweg 14, A-4030 Linz
+		Web:			https://www.gaeckler.at/
+
+		Copyright:		(c) 2013-2026 Martin Gäckler
+
+		This program is free software: you can redistribute it and/or modify
+		it under the terms of the GNU General Public License as published by
+		the Free Software Foundation, version 3.
+
+		You should have received a copy of the GNU General Public License
+		along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+		THIS SOFTWARE IS PROVIDED BY Martin Gäckler, Linz, Austria ``AS IS''
+		AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+		TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+		PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR
+		CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+		SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+		LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+		USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+		ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+		OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+		OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+		SUCH DAMAGE.
+*/
 package at.gaeckler.GpxMotorCycle;
 
 import java.io.BufferedReader;
@@ -23,7 +53,6 @@ import android.location.GpsSatellite;
 import android.location.GpsStatus;
 import android.location.Location;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.PowerManager;
@@ -42,7 +71,6 @@ import java.util.TimeZone;
 public class GpxMotorCycleActivity extends GpsActivity implements SensorEventListener
 {
 	private static final DecimalFormat s_altitudeFormat = new DecimalFormat( "0.0 m" );
-	private static final DecimalFormat s_accelFormat = new DecimalFormat( "0.0 m/s²" );
 	private static final DecimalFormat s_speedFormat = new DecimalFormat( "0.0 km/h" );
 
 	private static final String TRACK_FILE = "temp.gak.xml";
@@ -119,8 +147,8 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 	private float[]			m_accelerometerReading = new float[3];
     private float[]			m_magneticFieldReading = new float[3];
 
-    private float[]			m_rotationMatrix = new float[9];
-    private float[]			m_orientationAngles = new float[3];
+    private final float[]	m_rotationMatrix = new float[9];
+    private final float[]	m_orientationAngles = new float[3];
 
     private File				m_file = null;
 	private FileOutputStream	m_fileos = null;
@@ -523,28 +551,28 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 		System.out.println("setContentView");
         setContentView(R.layout.main);
 
-        m_statusView = (TextView)findViewById( R.id.statusView );
+        m_statusView = findViewById( R.id.statusView );
     	setStatus( m_myStatus );
-    	m_speedView = (TextView)findViewById( R.id.speedView );
-    	m_maxSpeedView = (TextView)findViewById( R.id.maxDpeedView );
+    	m_speedView = findViewById( R.id.speedView );
+    	m_maxSpeedView = findViewById( R.id.maxDpeedView );
 
-    	m_minAccelView = (TextView)findViewById( R.id.minAccelView );
-    	m_curAccelView = (TextView)findViewById( R.id.curAccelView );
-    	m_maxAccelView = (TextView)findViewById( R.id.maxAccelView );
+    	m_minAccelView = findViewById( R.id.minAccelView );
+    	m_curAccelView = findViewById( R.id.curAccelView );
+    	m_maxAccelView = findViewById( R.id.maxAccelView );
 
-    	m_distanceView = (TextView)findViewById( R.id.distanceView );
-    	m_timeView = (TextView)findViewById( R.id.timeView );
-    	m_breakView = (TextView)findViewById( R.id.breakView );
+    	m_distanceView = findViewById( R.id.distanceView );
+    	m_timeView = findViewById( R.id.timeView );
+    	m_breakView = findViewById( R.id.breakView );
     	
-    	m_lonView = (TextView)findViewById( R.id.lonView );
-    	m_latView = (TextView)findViewById( R.id.latView );
-    	m_altitudeView = (TextView)findViewById( R.id.altitudeView );
-    	m_upView = (TextView)findViewById( R.id.upView );
-    	m_downView = (TextView)findViewById( R.id.downView );
+    	m_lonView = findViewById( R.id.lonView );
+    	m_latView = findViewById( R.id.latView );
+    	m_altitudeView = findViewById( R.id.altitudeView );
+    	m_upView = findViewById( R.id.upView );
+    	m_downView = findViewById( R.id.downView );
 
-        m_combinedOrientStatusLabel = (TextView)findViewById( R.id.combinedStatus );
-        m_rotationStatusLabel = (TextView)findViewById( R.id.rotationStatus );;
-        m_gameStatusLabel = (TextView)findViewById( R.id.gameStatus );;
+        m_combinedOrientStatusLabel = findViewById( R.id.combinedStatus );
+        m_rotationStatusLabel = findViewById( R.id.rotationStatus );
+        m_gameStatusLabel = findViewById( R.id.gameStatus );
 
         m_sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         m_gameRotationMeter = m_sensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
@@ -666,7 +694,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
         editor.putInt(GPS_SPEED_KEY, getInterval() );
 
 		// Commit the edits!
-        editor.commit();
+        editor.apply();
     }
     
     @Override
@@ -760,7 +788,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
     	m_curAccelView.setText(accelStr);
 		double displayedDay = m_distance > 1000 ? m_distance/1000.0 : m_distance; 
     	m_distanceView.setText( 
-       		Double.toString(displayedDay)+" "+Double.toString(m_distanceIncrement)
+       		displayedDay+" "+m_distanceIncrement
        	);
     	m_timeView.setText(
     		fmtElapsed(newLocation.getTime()-m_startTime)
@@ -786,15 +814,15 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 		
     	m_lonView.setText( 
         		(m_calibration ? "*" : " ") +
-        		Double.toString(longitude)
+        		longitude
         	);
     	m_latView.setText( 
     		(m_calibration ? "*" : " ") +
-    		Double.toString(latitude)
+    		latitude
     	);
     	m_altitudeView.setText( 
         		(m_calibration ? "*" : " ") +
-        		s_altitudeFormat.format(snapedAltidute) + " (" + Integer.toString((int)(altitude+0.5)) + ")"
+        		s_altitudeFormat.format(snapedAltidute) + " (" + (int)(altitude+0.5) + ")"
         	);
     	m_upView.setText( s_altitudeFormat.format(m_upMeter) + "↑" );
     	m_downView.setText( s_altitudeFormat.format(m_downMeter) + "↓" );
@@ -806,8 +834,8 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
     	m_statusView.setText( 
 			text + ' ' + 
 			s_accuracyFormat.format(getAccuracy()) + ' ' + 
-			Long.toString(m_locationFixCount) + '/' +
-			Integer.toString(getNumLocations())
+			m_locationFixCount + '/' +
+			getNumLocations()
     	);
     }
 	@Override
@@ -859,8 +887,8 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 			}
 			setStatus( 
 				"GPS Satelliten: " + 
-				Integer.toString(SatellitesInFix) + "/" + 
-				Integer.toString(Satellites)
+				SatellitesInFix + "/" +
+				Satellites
 			);
 		}
 	}
