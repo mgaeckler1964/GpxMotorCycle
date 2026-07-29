@@ -44,9 +44,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.GnssStatus;
@@ -54,7 +52,6 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.PowerManager;
 import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -384,22 +381,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 
     public void showMessage( String title, String message, final boolean terminate )
     {
-    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    	builder.setMessage(message)
-    		   .setTitle(title)
-    	       .setCancelable(false)
-    	       .setNegativeButton("Fertig", new DialogInterface.OnClickListener() {
-    	           public void onClick(DialogInterface dialog, int id) {
-    	                dialog.cancel();
-    	                if( terminate )
-    	                {
-    	                	finish();
-    	                }
-    	           }
-    	       })
-    	       .setIcon(R.drawable.icon);
-    	AlertDialog alert = builder.create();
-    	alert.show();
+		showMessage(R.drawable.icon, title, message, terminate, null);
     }
 
     private void startListening() {
@@ -712,6 +694,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 	@Override
 	protected void  onSaveInstanceState (Bundle outState)
 	{
+		super.onSaveInstanceState(outState);
 		outState.putDouble(DISTANCE_KEY, m_distance );
 		if( m_distanceLocation != null )
 		{
