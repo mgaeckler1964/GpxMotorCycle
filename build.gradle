@@ -22,7 +22,7 @@ android {
         minSdk 30
         targetSdk 36
         versionCode 7
-        versionName "1.7.26"
+        versionName "1.7.29"
         resValue "string", "app_version", versionName
     }
 

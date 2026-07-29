@@ -903,11 +903,4 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
     	updateDisplay(newLocation);
     	appendTrackPoint(newLocation);
     }
-
-	@Override
-	public void onPermissionError() {
-		showMessage("GpxMotorCycle", "Berechtigung für Standort fehlt!", true);
-	}
-
-
 }
