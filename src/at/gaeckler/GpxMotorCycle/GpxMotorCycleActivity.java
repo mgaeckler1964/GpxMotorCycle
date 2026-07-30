@@ -58,6 +58,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+
 import at.gaeckler.gps.GpsActivity;
 import at.gaeckler.gps.GpsProcessor;
 import java.text.SimpleDateFormat;
@@ -692,7 +695,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
     }
 	
 	@Override
-	protected void  onSaveInstanceState (Bundle outState)
+	protected void  onSaveInstanceState (@NonNull Bundle outState)
 	{
 		super.onSaveInstanceState(outState);
 		outState.putDouble(DISTANCE_KEY, m_distance );
