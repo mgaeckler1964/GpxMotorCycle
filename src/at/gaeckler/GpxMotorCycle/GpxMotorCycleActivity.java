@@ -493,7 +493,6 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 			}
 		}
 
-    	int gpsInterval;
     	if( savedInstanceState != null )
         {
             m_locationFixCount = savedInstanceState.getLong(FIX_COUNT_KEY,0);
@@ -501,7 +500,6 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
             m_sumLongitude = savedInstanceState.getDouble(SUM_LONGITUDE_KEY,0);
             m_sumLatitude = savedInstanceState.getDouble(SUM_LATITUDE_KEY,0);
             m_sumAltitude = savedInstanceState.getDouble(SUM_ALTITUDE_KEY,0);
-            gpsInterval = savedInstanceState.getInt(GPS_SPEED_KEY,0); 
 
             m_distanceLocation = locationString(savedInstanceState.getString(LOCATION_KEY));
             m_distance = savedInstanceState.getDouble(DISTANCE_KEY);
@@ -514,12 +512,12 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
             m_startTime = savedInstanceState.getLong(START_TIME_KEY);
             setBreakTime(savedInstanceState.getLong(BREAK_TIME_KEY));
         }
-        else
+
         {
         	SharedPreferences settings = getSharedPreferences(CONFIGURATION_FILE, Context.MODE_PRIVATE);
-            gpsInterval = settings.getInt(GPS_SPEED_KEY,0); 
+            int gpsInterval = settings.getInt(GPS_SPEED_KEY,0);
+			createGpsTimer(gpsInterval);
         }
-    	createGpsTimer(gpsInterval);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         
@@ -717,7 +715,6 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 		outState.putDouble(SUM_LONGITUDE_KEY, m_sumLongitude);
 		outState.putDouble(SUM_LATITUDE_KEY, m_sumLatitude);
 		outState.putDouble(SUM_ALTITUDE_KEY, m_sumAltitude);
-		outState.putInt(GPS_SPEED_KEY, getInterval());
 	}
 	
 	// correction valid for Linz/Austria
