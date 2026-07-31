@@ -9,7 +9,7 @@
 
     <application android:icon="@drawable/icon" android:label="@string/app_name" android:allowBackup="true"
         android:enabled="true" android:supportsRtl="false"
-        android:theme="@style/Theme.GpxMotorCycle">
+        android:theme="@style/Theme.MyTheme">
         <activity android:name=".GpxMotorCycleActivity"
                   android:exported="true">
             <intent-filter>
