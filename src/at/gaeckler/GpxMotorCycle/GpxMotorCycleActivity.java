@@ -387,15 +387,18 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 		showMessage(R.drawable.icon, title, message, terminate, null);
     }
 
-    private void startListening() {
+    private void startListening()
+	{
     	m_sensorManager.registerListener(this, m_rotationVector, SensorManager.SENSOR_DELAY_NORMAL);
     	m_sensorManager.registerListener(this, m_gameRotationMeter, SensorManager.SENSOR_DELAY_NORMAL);
     	m_sensorManager.registerListener(this, m_accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     	m_sensorManager.registerListener(this, m_magneticField, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
-    private void stopListening() {
-    	m_sensorManager.unregisterListener(this);
+    private void stopListening()
+	{
+		if( m_sensorManager != null )
+    		m_sensorManager.unregisterListener(this);
     }
     
 	@Override
