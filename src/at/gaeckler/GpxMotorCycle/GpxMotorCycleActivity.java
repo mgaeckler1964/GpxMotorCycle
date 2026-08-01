@@ -30,9 +30,6 @@
 */
 package at.gaeckler.GpxMotorCycle;
 
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -53,7 +50,6 @@ import android.content.pm.PackageManager;
 import android.location.GnssStatus;
 import android.location.Location;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
@@ -64,8 +60,6 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import at.gaeckler.gps.GpsActivity;
 import at.gaeckler.gps.GpsProcessor;
@@ -482,57 +476,17 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
     public void onCreate(Bundle savedInstanceState)
     {
 		super.onCreate(savedInstanceState);
-        if( checkCallingOrSelfPermission("android.permission.ACCESS_FINE_LOCATION") == PackageManager.PERMISSION_DENIED )
-        {
-        	return;
-        }
-		// Prüfen, ob "Zugriff auf alle Dateien" bereits gewährt wurde:
-        System.out.println("check perm");
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+		if( !checkLocationPermission() )
 		{
-			if( !Environment.isExternalStorageManager() )
-			{
-				try
-				{
-
-					Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-					intent.addCategory("android.intent.category.DEFAULT");
-					intent.setData(Uri.parse(String.format("package:%s", getPackageName())));
-					startActivity(intent);
-				}
-				catch (Exception e)
-				{
-					Intent intent = new Intent();
-					intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
-					startActivity(intent);
-				}
-			}
-		}
-		else if(
-				ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE)
-						!= PackageManager.PERMISSION_GRANTED
-						|| ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE)
-						!= PackageManager.PERMISSION_GRANTED
-		)
-		{
-			// Suggestion: Request the permission instead of just failing
-			ActivityCompat.requestPermissions(
-					this,
-					new String[]{READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE},
-					STORAGE_PERMISSION_REQUEST_CODE
-			);
 			return;
 		}
-		else if( checkCallingOrSelfPermission("android.permission.READ_EXTERNAL_STORAGE") == PackageManager.PERMISSION_DENIED )
+
+		if( requestStoragePermission(R.drawable.icon, "GPX-Motorcycle") == RequestCode.rcDenied )
 		{
-			showMessage("GpxMotorCycle", "Read Permission Missing", true );
-		}
-		else if( checkCallingOrSelfPermission("android.permission.WRITE_EXTERNAL_STORAGE") == PackageManager.PERMISSION_DENIED )
-		{
-			showMessage("GpxMotorCycle", "Write Premission Missing", true);
+			return;
 		}
 
-		if( savedInstanceState != null )
+    	if( savedInstanceState != null )
         {
             m_locationFixCount = savedInstanceState.getLong(FIX_COUNT_KEY,0);
             m_calibration = savedInstanceState.getBoolean(CALIBRATION_KEY,false);
@@ -842,15 +796,12 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
     void setStatus( String text )
     {
     	m_myStatus = text;
-		if( m_statusView != null )
-		{
-			m_statusView.setText(
-				text + ' ' +
-				s_accuracyFormat.format(getAccuracy()) + ' ' +
-				m_locationFixCount + '/' +
-				getNumLocations()
-			);
-		}
+    	m_statusView.setText( 
+			text + ' ' + 
+			s_accuracyFormat.format(getAccuracy()) + ' ' + 
+			m_locationFixCount + '/' +
+			getNumLocations()
+    	);
     }
 
 	@Override
