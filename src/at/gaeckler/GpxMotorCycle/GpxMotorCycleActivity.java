@@ -38,7 +38,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 
-import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -46,13 +45,10 @@ import android.hardware.SensorManager;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.location.GnssStatus;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -197,7 +193,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 	{
 		if( m_sdfFname == null )
 		{
-			m_sdfFname = new SimpleDateFormat("yyyyMMdd'T'HHMMSS'Z'");
+			m_sdfFname = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
 			m_sdfFname.setTimeZone(TimeZone.getTimeZone("UTC"));
 		}
 		return m_sdfFname;
@@ -715,11 +711,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 	{
 		return (int)loc.getAltitude()-50;
 	}
-	static void setCorrectedAltitude( Location loc, double altitude )
-	{
-		loc.setAltitude(altitude+50);
-	}
-	
+
 	private void updateDisplay( Location newLocation )
 	{
     	long speed = GpsProcessor.speedToKmh(getSpeed());
