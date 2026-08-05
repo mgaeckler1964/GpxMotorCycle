@@ -566,10 +566,12 @@ public abstract class GpsActivity extends MyActivity
 	-----------------------------------------------------------------------------------------------
 	 */
 	private static final String XML_TRACK_FILE = ".temp.gps.xml";
-
 	private File				m_xmlFile = null;
 	private FileOutputStream	m_xmlFileOS = null;
 	private PrintWriter			m_xmlPos = null;
+
+	private Location			m_lastTrackPoint = null;
+	float						m_lastBearing=0;
 
 	private String getXmlTrackFileName()
 	{
@@ -612,7 +614,7 @@ public abstract class GpsActivity extends MyActivity
 			m_xmlPos.print(loc.getLatitude());
 			m_xmlPos.write("\">\n");
 			m_xmlPos.write("<ele>");
-			m_xmlPos.print(getCorrectedAltidute(loc));
+			m_xmlPos.print(getCorrectedAltitude(loc));
 			m_xmlPos.write("</ele>\n");
 			m_xmlPos.write("<geoidheight>");
 			m_xmlPos.print(loc.getAltitude());
@@ -626,29 +628,29 @@ public abstract class GpsActivity extends MyActivity
 			m_xmlPos.write("<speed>");
 			m_xmlPos.print(loc.getSpeed());
 			m_xmlPos.write("</speed>\n");
-			if( lastTrackPoint == null )
+			if( m_lastTrackPoint == null )
 			{
-				lastTrackPoint = loc;
+				m_lastTrackPoint = loc;
 			}
 			else
 			{
 				m_xmlPos.write("<calculated>\n");
 
-				float bearing = lastTrackPoint.bearingTo(loc);
+				float bearing = m_lastTrackPoint.bearingTo(loc);
 				m_xmlPos.write("<bearing>");
 				m_xmlPos.print(bearing);
 				m_xmlPos.write("</bearing>\n");
 
 				m_xmlPos.write("<turn>");
-				m_xmlPos.print(bearing-lastBearing);
+				m_xmlPos.print(bearing-m_lastBearing);
 				m_xmlPos.write("</turn>\n");
 
-				float distance =lastTrackPoint.distanceTo(loc);
+				float distance = m_lastTrackPoint.distanceTo(loc);
 				m_xmlPos.write("<distance>");
 				m_xmlPos.print(distance);
 				m_xmlPos.write("</distance>\n");
 
-				long ellapsedTime = loc.getTime()-lastTrackPoint.getTime();
+				long ellapsedTime = loc.getTime()-m_lastTrackPoint.getTime();
 				m_xmlPos.write("<ellapsedTime>");
 				m_xmlPos.print(ellapsedTime);
 				m_xmlPos.write("</ellapsedTime>\n");
@@ -661,8 +663,8 @@ public abstract class GpsActivity extends MyActivity
 				}
 				m_xmlPos.write("</calculated>\n");
 
-				lastBearing = bearing;
-				lastTrackPoint = loc;
+				m_lastBearing = bearing;
+				m_lastTrackPoint = loc;
 			}
 			m_xmlPos.write("</trkpt>\n");
 			m_xmlPos.flush();
@@ -783,17 +785,6 @@ public abstract class GpsActivity extends MyActivity
 		return getDateLong(loc.getTime(), useIso);
 	}
 
-
-	Location lastTrackPoint = null;
-	float lastBearing=0;
-
-
-
-
-
-
-
-
 	/*
 	-----------------------------------------------------------------------------------------------
 		Basic GPS handling
@@ -809,15 +800,24 @@ public abstract class GpsActivity extends MyActivity
 	public abstract void onGnssStatusChanged2(int event, GnssStatus status);
 	public abstract void onLocationChanged( Location newLocation );
 
-	/**
-	 * Get the corrected altitude
-	 * @param loc the location
-	 * @return the corrected altitude
-	 */
 	// correction valid for Linz/Austria
-	static public int getCorrectedAltidute( Location loc )
+	/**
+	 * Get the corrected sealevel altitude
+	 * @param loc the location
+	 * @return the corrected sealevelaltitude
+	 */
+	static public int getCorrectedAltitude( Location loc )
 	{
 		return (int)loc.getAltitude()-50;
+	}
+	/**
+	 * set the sealevel altitude
+	 * @param loc the location
+	 * @param altitude the sealevel altitude
+	 */
+	static public void setCorrectedAltitude( Location loc, double altitude )
+	{
+		loc.setAltitude(altitude+50);
 	}
 
 	/**

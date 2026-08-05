@@ -534,7 +534,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 		m_breakView.setText(
 			fmtElapsed(getBreakTime())
 		);
-		int snapedAltidute = getCorrectedAltidute(newLocation);
+		int snapedAltitude = getCorrectedAltitude(newLocation);
 		double longitude, latitude, altitude;
 
 		if(m_calibration)
@@ -560,7 +560,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 		);
 		m_altitudeView.setText(
 				(m_calibration ? "*" : " ") +
-				s_altitudeFormat.format(snapedAltidute) + " (" + (int)(altitude+0.5) + ")"
+				s_altitudeFormat.format(snapedAltitude) + " (" + (int)(altitude+0.5) + ")"
 			);
 		m_upView.setText( s_altitudeFormat.format(m_upMeter) + "↑" );
 		m_downView.setText( s_altitudeFormat.format(m_downMeter) + "↓" );
