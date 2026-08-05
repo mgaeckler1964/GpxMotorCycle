@@ -438,8 +438,12 @@ public abstract class GpsActivity extends MyActivity
 	private File				m_rawFile = null;
 	private FileOutputStream	m_rawFileOS = null;
 	private PrintWriter			m_rawPos = null;
-	private static final String RAW_TRACK_FILE = "temp.gak.gps.txt";
+	private static final String RAW_TRACK_FILE = ".temp.raw.gps.txt";
 
+	private String getRawTrackFileName()
+	{
+		return getLocalClassName() + RAW_TRACK_FILE;
+	}
 	private static File getExternalFileName( String filename )
 	{
 		File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
@@ -457,7 +461,7 @@ public abstract class GpsActivity extends MyActivity
 
 	private void openRAWfileOS() throws IOException
 	{
-		m_rawFile = getExternalFileName(RAW_TRACK_FILE);
+		m_rawFile = getExternalFileName(getRawTrackFileName());
 		m_rawFile.createNewFile();
 
 		m_rawFileOS = new FileOutputStream(m_rawFile, true);
@@ -513,7 +517,7 @@ public abstract class GpsActivity extends MyActivity
 		{
 			if( m_rawFile == null )
 			{
-				m_rawFile = getExternalFileName(RAW_TRACK_FILE);
+				m_rawFile = getExternalFileName(getRawTrackFileName());
 			}
 
 			BufferedReader  reader = new BufferedReader(new FileReader(m_rawFile));
@@ -561,14 +565,19 @@ public abstract class GpsActivity extends MyActivity
 		XML file
 	-----------------------------------------------------------------------------------------------
 	 */
-	private static final String XML_TRACK_FILE = "temp.gak.xml";
+	private static final String XML_TRACK_FILE = ".temp.gps.xml";
+
 	private File				m_xmlFile = null;
 	private FileOutputStream	m_xmlFileOS = null;
 	private PrintWriter			m_xmlPos = null;
 
+	private String getXmlTrackFileName()
+	{
+		return getLocalClassName() + XML_TRACK_FILE;
+	}
 	private void openXMLos() throws IOException
 	{
-		m_xmlFile = getExternalFileName(XML_TRACK_FILE);
+		m_xmlFile = getExternalFileName( getXmlTrackFileName() );
 		m_xmlFile.createNewFile();
 
 		m_xmlFileOS = new FileOutputStream(m_xmlFile, true);
@@ -676,7 +685,7 @@ public abstract class GpsActivity extends MyActivity
 		}
 		if( m_xmlFile == null )
 		{
-			m_xmlFile = getExternalFileName(XML_TRACK_FILE);
+			m_xmlFile = getExternalFileName(getXmlTrackFileName());
 		}
 		if( m_xmlFile != null )
 		{
