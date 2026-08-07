@@ -30,7 +30,6 @@
 */
 package at.gaeckler.GpxMotorCycle;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 
@@ -44,7 +43,6 @@ import android.content.SharedPreferences;
 import android.location.GnssStatus;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -135,21 +133,6 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 	private final float[]	m_rotationMatrix = new float[9];
 	private final float[]	m_orientationAngles = new float[3];
 
-
-	private static File getExternalFileName( String filename )
-	{
-		File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-
-		System.out.println(dir.getPath());
-		if( !dir.exists() )
-		{
-			dir.mkdir();
-		}
-		File file = new File(dir, filename);
-		System.out.println(file.getPath());
-
-		return file;
-	}
 
 	@SuppressLint("DefaultLocale")
 	private String fmtElapsed( long elapsedTime )
@@ -264,7 +247,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 			return;
 		}
 
-		if( requestStoragePermission(R.drawable.icon, "GPX-Motorcycle") == RequestCode.rcDenied )
+		if( requestStoragePermission(R.drawable.icon, "GPX-Motorcycle") == RequestCode.DENIED )
 		{
 			return;
 		}
