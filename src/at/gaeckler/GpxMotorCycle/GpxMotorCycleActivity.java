@@ -43,6 +43,7 @@ import android.content.SharedPreferences;
 import android.location.GnssStatus;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -269,7 +270,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 			m_maxAccel = savedInstanceState.getDouble(MAX_ACCEL_KEY);
 
 			m_startTime = savedInstanceState.getLong(START_TIME_KEY);
-			setBreakTime(savedInstanceState.getLong(BREAK_TIME_KEY));
+			setBrakeTime(savedInstanceState.getLong(BREAK_TIME_KEY));
 		}
 
 		{
@@ -280,7 +281,6 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-		System.out.println("setContentView");
 		setContentView(R.layout.main);
 
 		m_statusView = findViewById( R.id.statusView );
@@ -357,7 +357,6 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 	public boolean onOptionsItemSelected( MenuItem item )
 	{
 		int	itemID = item.getItemId();
-		System.out.println( itemID );
 		if( itemID == R.id.calibration )
 		{
 			if (!m_calibration)
@@ -393,12 +392,12 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 		{
 			stopListening();
 			try {
-				createGpxFile();
+				createGpxTrack();
 			}
 			catch (IOException e)
 			{
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e(getLocalClassName(), "createGpxTrack failed", e);
 			}
 			finish();
 		}
@@ -432,11 +431,13 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 	@Override
 	public void onPause()
 	{
-		try {
+		try
+		{
 			closeXMLos();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			Log.e(getLocalClassName(), "closeXMLos failed", e);
 		}
 		saveSharedPreferences();
 		super.onPause();
@@ -467,7 +468,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 		outState.putDouble(MAX_ACCEL_KEY, m_maxAccel);
 
 		outState.putLong(START_TIME_KEY, m_startTime);
-		outState.putLong(BREAK_TIME_KEY, getBreakTime());
+		outState.putLong(BREAK_TIME_KEY, getBrakeTime());
 		
 		outState.putLong(FIX_COUNT_KEY, m_locationFixCount);
 		outState.putBoolean(CALIBRATION_KEY, m_calibration);
@@ -515,7 +516,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 			fmtElapsed(newLocation.getTime()-m_startTime)
 		);
 		m_breakView.setText(
-			fmtElapsed(getBreakTime())
+			fmtElapsed(getBrakeTime())
 		);
 		int snapedAltitude = getCorrectedAltitude(newLocation);
 		double longitude, latitude, altitude;
