@@ -429,21 +429,14 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 	}
 
 	@Override
-	public void onPause()
+	protected void onPause()
 	{
-		try
-		{
-			closeXMLos();
-		}
-		catch (IOException e)
-		{
-			Log.e(getLocalClassName(), "closeXMLos failed", e);
-		}
 		saveSharedPreferences();
 		super.onPause();
 	}
+
 	@Override
-	public void onDestroy()
+	protected void onDestroy()
 	{
 		stopListening();
 
