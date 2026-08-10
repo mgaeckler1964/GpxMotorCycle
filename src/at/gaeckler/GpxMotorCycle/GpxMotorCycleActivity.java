@@ -395,8 +395,9 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 		else if( itemID ==  R.id.exit )
 		{
 			stopListening();
-			try {
-				m_gpsLogger.createGpxTrack(getStartTime());
+			try
+			{
+				m_gpsLogger.createGpxTrack();
 			}
 			catch (IOException e)
 			{
@@ -515,7 +516,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 		m_breakView.setText(
 			fmtElapsed(getBrakeTime())
 		);
-		int snapedAltitude = getCorrectedAltitude(newLocation);
+		int snapedAltitude = GpsUtils.getCorrectedAltitude(newLocation);
 		double longitude, latitude, altitude;
 
 		if(m_calibration)
