@@ -54,6 +54,7 @@ import androidx.annotation.NonNull;
 
 import at.gaeckler.gps.GpsActivity;
 import at.gaeckler.gps.GpsProcessor;
+import at.gaeckler.gps.GpsUtils;
 
 public class GpxMotorCycleActivity extends GpsActivity implements SensorEventListener
 {
@@ -261,7 +262,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 			m_sumLatitude = savedInstanceState.getDouble(SUM_LATITUDE_KEY,0);
 			m_sumAltitude = savedInstanceState.getDouble(SUM_ALTITUDE_KEY,0);
 
-			m_distanceLocation = locationString(savedInstanceState.getString(LOCATION_KEY));
+			m_distanceLocation = GpsUtils.locationString(savedInstanceState.getString(LOCATION_KEY));
 			m_distance = savedInstanceState.getDouble(DISTANCE_KEY);
 			m_upMeter = savedInstanceState.getDouble(UP_KEY);
 			m_downMeter = savedInstanceState.getDouble(DOWN_KEY);
@@ -315,7 +316,10 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 
 		setIgnoreAccuracy(true);
 		//simulateLocationFix(m_home);
-		readTrackPoints();
+		if(checkReadStoragePermission())
+		{
+			m_gpsLogger.readTrackPoints();
+		}
 	}
 
 	@Override
@@ -392,7 +396,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 		{
 			stopListening();
 			try {
-				createGpxTrack();
+				m_gpsLogger.createGpxTrack(getStartTime());
 			}
 			catch (IOException e)
 			{
@@ -452,7 +456,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 		outState.putDouble(DISTANCE_KEY, m_distance );
 		if( m_distanceLocation != null )
 		{
-			outState.putString(LOCATION_KEY, locationString(m_distanceLocation));
+			outState.putString(LOCATION_KEY, GpsUtils.locationString(m_distanceLocation));
 		}
 		outState.putDouble(UP_KEY, m_upMeter );
 		outState.putDouble(DOWN_KEY, m_downMeter );
@@ -627,6 +631,6 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 		setStatus( m_myStatus );
 
 		updateDisplay(newLocation);
-		appendTrackPoint2XML(newLocation);
+		m_gpsLogger.appendTrackPoint2XML(newLocation);
 	}
 }
