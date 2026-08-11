@@ -54,6 +54,7 @@ import androidx.annotation.NonNull;
 
 import at.gaeckler.gps.GpsActivity;
 import at.gaeckler.gps.GpsProcessor;
+import at.gaeckler.gps.GpsService;
 import at.gaeckler.gps.GpsUtils;
 
 public class GpxMotorCycleActivity extends GpsActivity implements SensorEventListener
@@ -274,12 +275,6 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 			setBrakeTime(savedInstanceState.getLong(BREAK_TIME_KEY));
 		}
 
-		{
-			SharedPreferences settings = getSharedPreferences(CONFIGURATION_FILE, Context.MODE_PRIVATE);
-			int gpsInterval = settings.getInt(GPS_SPEED_KEY,0);
-			createGpsTimer(gpsInterval);
-		}
-
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 		setContentView(R.layout.main);
@@ -316,10 +311,21 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 
 		setIgnoreAccuracy(true);
 		//simulateLocationFix(m_home);
+	}
+
+	@Override
+	protected void onConfigureService()
+	{
+		SharedPreferences settings = getSharedPreferences(CONFIGURATION_FILE, Context.MODE_PRIVATE);
+		int gpsInterval = settings.getInt(GPS_SPEED_KEY,0);
+		getService().createGpsTimer(gpsInterval);
+
 		if(checkReadStoragePermission())
 		{
-			m_gpsLogger.readTrackPoints();
+			getService().getGpsLogger().readTrackPoints();
 		}
+
+		super.onConfigureService();
 	}
 
 	@Override
@@ -337,10 +343,10 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 		menu.findItem(R.id.calibration).setChecked(m_calibration);
 
 		int gpsInterval = getInterval();
-		menu.findItem(R.id.autoGps).setChecked(gpsInterval==AUTO_GPS);
-		menu.findItem(R.id.fastGps).setChecked(gpsInterval==FAST_GPS);
-		menu.findItem(R.id.normalGps).setChecked(gpsInterval==NORMAL_GPS);
-		menu.findItem(R.id.slowGps).setChecked(gpsInterval==SLOW_GPS);
+		menu.findItem(R.id.autoGps).setChecked(gpsInterval== GpsService.AUTO_GPS);
+		menu.findItem(R.id.fastGps).setChecked(gpsInterval==GpsService.FAST_GPS);
+		menu.findItem(R.id.normalGps).setChecked(gpsInterval==GpsService.NORMAL_GPS);
+		menu.findItem(R.id.slowGps).setChecked(gpsInterval==GpsService.SLOW_GPS);
 		
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -378,26 +384,26 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 		}
 		else if( itemID ==  R.id.autoGps )
 		{
-			removeGpsTimer();
+			getService().removeGpsTimer();
 		}
 		else if( itemID ==  R.id.fastGps )
 		{
-			createGpsTimer(FAST_GPS);
+			getService().createGpsTimer(GpsService.FAST_GPS);
 		}
 		else if( itemID ==  R.id.normalGps )
 		{
-			createGpsTimer(NORMAL_GPS);
+			getService().createGpsTimer(GpsService.NORMAL_GPS);
 		}
 		else if( itemID ==  R.id.slowGps )
 		{
-			createGpsTimer(SLOW_GPS);
+			getService().createGpsTimer(GpsService.SLOW_GPS);
 		}
 		else if( itemID ==  R.id.exit )
 		{
 			stopListening();
 			try
 			{
-				m_gpsLogger.createGpxTrack();
+				getService().getGpsLogger().createGpxTrack();
 			}
 			catch (IOException e)
 			{
@@ -632,6 +638,5 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 		setStatus( m_myStatus );
 
 		updateDisplay(newLocation);
-		m_gpsLogger.appendTrackPoint2XML(newLocation);
 	}
 }
