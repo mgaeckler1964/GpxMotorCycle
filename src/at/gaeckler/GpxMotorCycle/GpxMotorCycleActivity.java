@@ -566,19 +566,19 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 	}
 
 	@Override
-	public void onLocationEnabled()
+	protected void onLocationEnabled()
 	{
 		setStatus( "GPS ist eingeschaltet");
 	}
 
 	@Override
-	public void onLocationDisabled()
+	protected void onLocationDisabled()
 	{
 		setStatus( "GPS ist abgeschaltet");
 	}
 	
 	@Override
-	public void onGnssStatusChanged2(int event, GnssStatus status)
+	protected void onGnssStatusChanged2(int event, GnssStatus status)
 	{
 		if( event == GPS_EVENT_STARTED )
 			setStatus( "GPS gestartet");
@@ -604,7 +604,7 @@ public class GpxMotorCycleActivity extends GpsActivity implements SensorEventLis
 	}
 
 	@Override
-	public void onLocationChanged( Location newLocation )
+	protected void onLocationChanged( Location newLocation )
 	{
 		if( m_startTime == 0 )
 		{
