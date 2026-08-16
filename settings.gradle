@@ -15,3 +15,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "GpxMotorCycle"
 include ':'
+
+include ':GakAndBase'
+project(':GakAndBase').projectDir = new File('GakAndBase')
